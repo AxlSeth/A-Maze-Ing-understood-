@@ -82,29 +82,62 @@ class MazeGenerator():
                 if PATTERN[py][px] == 1:
                     maze[oy + py][ox + px].is_pattern = 1 
 
+
     def get_neighbors(self,
                       maze: list[list[Cell]],
                       y: int,
                       x: int) -> list[tuple[str ,int , int]]:
         valid_directions: list[tuple[str, int, int]] = []
-        if (y + 1) < HEIGHT and maze[y + 1][x].is_checked == 0 and maze[y + 1][x].is_pattern == 0:
+        if ((y + 1) < HEIGHT and
+            maze[y + 1][x].is_checked == 0 and
+            maze[y + 1][x].is_pattern == 0):
             valid_directions.append(("s" ,y + 1 , x))
-        if (y - 1) >= 0 and maze[y - 1][x].is_checked == 0 and maze[y - 1][x].is_pattern == 0:
+        if ((y - 1) >= 0 and
+            maze[y - 1][x].is_checked == 0 and
+            maze[y - 1][x].is_pattern == 0):
             valid_directions.append(("n" ,y - 1 , x))
-        if (x + 1) < WIDTH and maze[y][x + 1].is_checked == 0 and maze[y][x + 1].is_pattern == 0:
+        if ((x + 1) < WIDTH and
+            maze[y][x + 1].is_checked == 0 and
+            maze[y][x + 1].is_pattern == 0):
             valid_directions.append(("e", y, x + 1))
-        if (x - 1) >= 0 and maze[y][x - 1].is_checked == 0 and maze[y][x - 1].is_pattern == 0:
+        if ((x - 1) >= 0 and
+            maze[y][x - 1].is_checked == 0 and
+            maze[y][x - 1].is_pattern == 0):
             valid_directions.append(("w", y, x - 1))
         return (valid_directions)
-         
+
+#for every cell,
+#look for every valid direction(s) i can to go to
+#choose one random direction to go to
+#remove the wall going to that direction
+#update the coordinates according to the new directions and repeat the loop
+#
+#What you have vs what you need
+#Right now create_paths loops over every cell in order and marks it visited. That's just a nested loop — no stack, no backtracking, no random carving. The maze would have all cells visited but no walls opened, so nothing would be connected.
+#The actual structure of create_paths
+#It needs these ingredients in this order:
+#First, pick a starting cell — (y=0, x=0) is fine. Mark it visited. Create a stack as an empty list and push (0, 0) onto it.
+#Then enter a while loop that runs while the stack is not empty.
+#Inside the loop: peek at the top with stack[-1] and unpack it into y, x. Call get_neighbors with those coordinates. Shuffle the result with random.shuffle().
+#If the neighbors list is not empty: take the first tuple, unpack it into direction, ny, nx. Open the wall on the current cell using maze[y][x].walls[direction] = 0. Open the opposite wall on the neighbor using maze[ny][nx].walls[OPPOSITES[direction]] = 0. Mark the neighbor visited with maze[ny][nx].is_checked = 1. Push (ny, nx) onto the stack.
+#If the neighbors list is empty: just call stack.pop().
+#That's the complete DFS. Notice Cell no longer needs row and col stored on it — the coordinates come from the stack, not from the cell itself. You can remove those attributes from Cell.__init__ and go back to Cell(y, x) just being Cell() with no parameters.
+#Try writing it now — it's about 12 lines of actual logic inside the while loop.
+
+
+    def create_paths(self,
+                     maze: list[list[Cell]]) -> None:
+        ...
+        
+
     def generate(self,
                  width: int,
                  height: int) -> list[list[Cell]]:
         maze: list[list[Cell]] = []
 
-        for _ in range(height):
+        for y in range(height):
             row: list[Cell] = []
-            for _ in range(width):
+            for x in range(width):
                 cell: Cell = Cell()
                 row.append(cell)
             maze.append(row)
@@ -115,7 +148,7 @@ class MazeGenerator():
 #----------------------
 def main() -> None:
     maze_gen: MazeGenerator = MazeGenerator()
-    maze: list[list[Cell]] = maze_gen.generate(WIDTH, HEIGHT)
+    maze_gen.generate(WIDTH, HEIGHT)
 
 if __name__ == "__main__":
     main()
