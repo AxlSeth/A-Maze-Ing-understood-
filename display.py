@@ -1,17 +1,56 @@
-import shutil
 import subprocess
 import maze_gen
-import variables
+import vars
+import maze_gen
 
 
 subprocess.run(["clear"])
 
 
-print("  ▄████████           ▄▄▄▄███▄▄▄▄      ▄████████  ▄███████▄     ▄████████          ▄█  ███▄▄▄▄      ▄██████▄  ".center(COLUMNS))
-print("  ███    ███         ▄██▀▀▀███▀▀▀██▄   ███    ███ ██▀     ▄██   ███    ███         ███  ███▀▀▀██▄   ███    ███".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███       ▄███▀   ███    █▀          ███▌ ███   ███   ███    █▀ ".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███  ▀█▀▄███▀▄▄  ▄███▄▄▄             ███▌ ███   ███  ▄███       ".center(COLUMNS))
-print("▀███████████ ███████ ███   ███   ███ ▀███████████   ▄███▀  ▀  ▀▀███▀▀▀     ███████ ███▌ ███   ███ ▀▀███ ████▄ ".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███ ▄███▀         ███    █▄          ███  ███   ███   ███    ███".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███ ███▄     ▄█   ███    ███         ███  ███   ███   ███    ███".center(COLUMNS))
-print("  ███    █▀           ▀█   ███   █▀    ███    █▀   ▀████████▀   ██████████         █▀    ▀█   █▀    ████████▀ ".center(COLUMNS), end ="\n"*6)
+print("   ▄████████       ▄▄▄▄███▄▄▄▄      ▄████████  ▄███████▄     ▄████████      ▄█  ███▄▄▄▄      ▄██████▄  ".center(vars.COLUMNS))
+print("  ███    ███     ▄██▀▀▀███▀▀▀██▄   ███    ███ ██▀     ▄██   ███    ███     ███  ███▀▀▀██▄   ███    ███ ".center(vars.COLUMNS))
+print("  ███    ███     ███   ███   ███   ███    ███       ▄███▀   ███    █▀      ███▌ ███   ███   ███    █▀  ".center(vars.COLUMNS))
+print(" "*9 + "  ███    ███ \033[31m▄ ▄\033[0m ███   ███   ███   ███    ███  ▀█▀▄███▀▄▄  ▄███▄▄▄     \033[31m▄ ▄\033[0m ███▌ ███   ███  ▄███        ".center(vars.COLUMNS))
+print(" "*9 + "▀███████████ \033[31m▀█▀\033[0m ███   ███   ███ ▀███████████   ▄███▀   ▀ ▀▀███▀▀▀     \033[31m▀█▀\033[0m ███▌ ███   ███ ▀▀███ ████▄  ".center(vars.COLUMNS))
+print("  ███    ███     ███   ███   ███   ███    ███ ▄███▀         ███    █▄      ███  ███   ███   ███    ███ ".center(vars.COLUMNS))
+print("  ███    ███     ███   ███   ███   ███    ███ ███▄     ▄█   ███    ███     ███  ███   ███   ███    ███ ".center(vars.COLUMNS))
+print("  ███    █▀       ▀█   ███   █▀    ███    █▀   ▀████████▀   ██████████      █▀    ▀█   █▀    ████████▀  ".center(vars.COLUMNS), end="\n"*6)
+                                                                               
+def display_maze(maze: list[list[maze_gen.Cell]]) -> None:                     
+    height: int = len(maze)
+    width: int = len(maze[0])
+
+    for y in range(height):
+        for x in range(width):
+            if x == 0:
+                print(" " * vars.START_POINT, end="")
+            print("██", end="")
+            if maze[y][x].walls["n"] == 1:
+                print("██", end="")
+            else:
+                print("  ", end="")
+        print("██")
+
+        for x in range(width):
+            if x == 0:
+                print(" " * vars.START_POINT, end="")
+            if maze[y][x].walls["w"] == 1:
+                if maze[y][x].is_pattern == 1:
+                    print("██\033[31m##\033[0m", end="")
+                else:
+                    print("██  ", end="")
+            else:
+                print("    ", end="")
+        print("██")
+
+    for x in range(width):
+        if x == 0:
+            print(" " * vars.START_POINT, end="")
+        print("██", end="")
+        if maze[height - 1][x].walls["s"] == 1:
+            print("██", end="")
+        else:
+            print("    ", end="")
+    print("██")
+
+

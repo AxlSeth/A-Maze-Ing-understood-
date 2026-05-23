@@ -1,54 +1,6 @@
 import random
-import shutil
-import subprocess
-
-
-subprocess.run(["clear"])
-
-
-WIDTH: int = 20
-HEIGHT: int = 10
-
-
-while True:
-    SYMBOL: str = input("Choose a symbol: ")
-    if len(SYMBOL) != 1:
-        print("Invalid character, repeat!")
-    else:
-        break
-
-
-COLUMNS = shutil.get_terminal_size().columns
-
-
-print("  ▄████████           ▄▄▄▄███▄▄▄▄      ▄████████  ▄███████▄     ▄████████          ▄█  ███▄▄▄▄      ▄██████▄  ".center(COLUMNS))
-print("  ███    ███         ▄██▀▀▀███▀▀▀██▄   ███    ███ ██▀     ▄██   ███    ███         ███  ███▀▀▀██▄   ███    ███".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███       ▄███▀   ███    █▀          ███▌ ███   ███   ███    █▀ ".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███  ▀█▀▄███▀▄▄  ▄███▄▄▄             ███▌ ███   ███  ▄███       ".center(COLUMNS))
-print("▀███████████ ███████ ███   ███   ███ ▀███████████   ▄███▀  ▀  ▀▀███▀▀▀     ███████ ███▌ ███   ███ ▀▀███ ████▄ ".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███ ▄███▀         ███    █▄          ███  ███   ███   ███    ███".center(COLUMNS))
-print("  ███    ███         ███   ███   ███   ███    ███ ███▄     ▄█   ███    ███         ███  ███   ███   ███    ███".center(COLUMNS))
-print("  ███    █▀           ▀█   ███   █▀    ███    █▀   ▀████████▀   ██████████         █▀    ▀█   █▀    ████████▀ ".center(COLUMNS), end ="\n"*6)
-
-
-OPPOSITES: dict[str, str] = {"n": "s",
-                             "s": "n",
-                             "e": "w",
-                             "w": "e"}
-
-
-PATTERN: list[list[int]] = [[0, 0, 1, 0, 0, 1, 1, 1],
-                            [0, 1, 1, 0, 0, 0, 0, 1],
-                            [1, 0, 1, 0, 0, 1, 1, 1],
-                            [1, 1, 1, 1, 0, 1, 0, 0],
-                            [0, 0, 1, 0, 0, 1, 1, 1]]
-
-
-MIN_WIDTH: int = len(PATTERN[0]) + 2
-MIN_HEIGHT: int = len(PATTERN) + 2
-
-
-START_POINT = (COLUMNS//2) - (WIDTH * 2)
+import vars
+import display
 
 
 class Cell():
@@ -61,56 +13,19 @@ class Cell():
         self.is_pattern: int = 0
 
 
-def display_maze(maze: list[list[Cell]]) -> None:
-    height: int = len(maze)
-    width: int = len(maze[0])
-
-    for y in range(height):
-        for x in range(width):
-            if x == 0:
-                print(" " * START_POINT, end="")
-            print("██", end="")
-            if maze[y][x].walls["n"] == 1:
-                print("██", end="")
-            else:
-                print("  ", end="")
-        print("██")
-
-        for x in range(width):
-            if x == 0:
-                print(" " * START_POINT, end="")
-            if maze[y][x].walls["w"] == 1:
-                if maze[y][x].is_pattern == 1:
-                    print(f"██\033[32m{SYMBOL}{SYMBOL}\033[0m", end="")
-                else:
-                    print("██  ", end="")
-            else:
-                print("    ", end="")
-        print("██")
-
-    for x in range(width):
-        if x == 0:
-            print(" " * START_POINT, end="")
-        print("██", end="")
-        if maze[height - 1][x].walls["s"] == 1:
-            print("██", end="")
-        else:
-            print("    ", end="")
-    print("██")
-
 
 class MazeGenerator():
     def __init__(self) -> None:
-        self.width = WIDTH
-        self.height = HEIGHT
+        self.width = vars.WIDTH
+        self.height = vars.HEIGHT
 
     def apply_pattern(self,
                       maze: list[list[Cell]]) -> None:
-        oy: int = (len(maze) - len(PATTERN)) // 2
-        ox: int = (len(maze[0]) - len(PATTERN[0])) // 2
-        for py in range(len(PATTERN)):
-            for px in range(len(PATTERN[0])):
-                if PATTERN[py][px] == 1:
+        oy: int = (len(maze) - len(vars.PATTERN)) // 2
+        ox: int = (len(maze[0]) - len(vars.PATTERN[0])) // 2
+        for py in range(len(vars.PATTERN)):
+            for px in range(len(vars.PATTERN[0])):
+                if vars.PATTERN[py][px] == 1:
                     maze[oy + py][ox + px].is_pattern = 1
 
     def get_neighbors(self,
@@ -118,7 +33,7 @@ class MazeGenerator():
                       y: int,
                       x: int) -> list[tuple[str, int, int]]:
         valid_directions: list[tuple[str, int, int]] = []
-        if ((y + 1) < HEIGHT and
+        if ((y + 1) < vars.HEIGHT and
             maze[y + 1][x].is_checked == 0 and
                 maze[y + 1][x].is_pattern == 0):
             valid_directions.append(("s", y + 1, x))
@@ -126,7 +41,7 @@ class MazeGenerator():
             maze[y - 1][x].is_checked == 0 and
                 maze[y - 1][x].is_pattern == 0):
             valid_directions.append(("n", y - 1, x))
-        if ((x + 1) < WIDTH and
+        if ((x + 1) < vars.WIDTH and
             maze[y][x + 1].is_checked == 0 and
                 maze[y][x + 1].is_pattern == 0):
             valid_directions.append(("e", y, x + 1))
@@ -149,7 +64,7 @@ class MazeGenerator():
                 direction, ny, nx = random.choice(valid_directions)
                 maze[ny][nx].is_checked = 1
                 maze[y][x].walls[direction] = 0
-                maze[ny][nx].walls[OPPOSITES[direction]] = 0
+                maze[ny][nx].walls[vars.OPPOSITES[direction]] = 0
                 stack.append((ny, nx))
 
     def generate(self,
@@ -165,13 +80,13 @@ class MazeGenerator():
             maze.append(row)
         self.apply_pattern(maze)
         self.create_paths(maze)
-        display_maze(maze)
+        display.display_maze(maze)
         return (maze)
 
 
 def main() -> None:
     maze_gen: MazeGenerator = MazeGenerator()
-    maze_gen.generate(WIDTH, HEIGHT)
+    maze_gen.generate(vars.WIDTH, vars.HEIGHT)
 
 
 if __name__ == "__main__":
