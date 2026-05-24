@@ -24,16 +24,16 @@ def get_dimensions():
         try:
             w = int(input("Enter maze's width: "))
             h = int(input("Enter maze's height: "))
-            if not (len(PATTERN) <= h <= COLUMNS // 6 or len(PATTERN[0]) <= w <= ROWS//6):
+            if not (1 <= h <= COLUMNS // 6 or 1 <= w <= ROWS//6):
                 raise ValueError()
             return w, h
         except ValueError:
             subprocess.run(["clear"])
-            if not len(PATTERN) <= h <= COLUMNS:
-                print(f"Maze's height must be between {len(PATTERN)} and {COLUMNS//6}")
+            if not 1 <= h <= COLUMNS:
+                print(f"Maze's height must be between 1 and {COLUMNS//6}")
                 continue
-            elif not len(PATTERN[0]) <= w <= ROWS:
-                print(f"Maze's length must be between {len(PATTERN[0])} and {ROWS//6}")
+            elif not 1 <= w <= ROWS:
+                print(f"Maze's length must be between 1 and {ROWS//6}")
                 continue
 
 

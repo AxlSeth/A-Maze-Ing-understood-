@@ -81,7 +81,8 @@ class MazeGenerator():
                 cell: Cell = Cell()
                 row.append(cell)
             maze.append(row)
-        self.apply_pattern(maze)
+        if vars.HEIGHT > len(vars.PATTERN) and vars.WIDTH > len(vars.PATTERN[0]):
+            self.apply_pattern(maze)
         self.create_paths(maze)
         display.display_maze(maze)
         return (maze)
