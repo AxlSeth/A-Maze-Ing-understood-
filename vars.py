@@ -25,17 +25,12 @@ def get_dimensions():
             w = int(input("Enter maze's width: "))
             h = int(input("Enter maze's height: "))
             if not (1 <= h <= COLUMNS // 6 or 1 <= w <= ROWS//6):
-                raise ValueError()
+               raise ValueError()
             return w, h
         except ValueError:
             subprocess.run(["clear"])
-            if not 1 <= h <= COLUMNS:
-                print(f"Maze's height must be between 1 and {COLUMNS//6}")
-                continue
-            elif not 1 <= w <= ROWS:
-                print(f"Maze's length must be between 1 and {ROWS//6}")
-                continue
-
+            print("Please input a valid number, don't be stupid.")
+            continue
 
 WIDTH, HEIGHT = get_dimensions()
 
