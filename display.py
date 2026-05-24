@@ -1,10 +1,7 @@
-import subprocess
-import maze_gen
 import vars
 import maze_gen
 import time
 
-subprocess.run(["clear"])
 
 def print_title():
     title = """
@@ -17,11 +14,11 @@ def print_title():
      ███    ███     ███   ███   ███   ███    ███ ███▄     ▄█   ███    ███     ███  ███   ███   ███    ███
      ███    █▀       ▀█   ███   █▀    ███    █▀   ▀████████▀   ██████████     █▀    ▀█   █▀    ████████▀ 
     """
+
     print("\n"*2)
     for line in title.splitlines():
         print(line.center(vars.COLUMNS))
-    print("\n" * 8)                      
-
+    print("\n" * 8)
 
 def display_maze(maze: list[list[maze_gen.Cell]]) -> None:                     
     height: int = len(maze)
@@ -59,5 +56,3 @@ def display_maze(maze: list[list[maze_gen.Cell]]) -> None:
         else:
             print("    ", end="")
     print("██")
-
-

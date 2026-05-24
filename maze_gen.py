@@ -4,8 +4,6 @@ import display
 import subprocess
 
 
-
-
 class Cell():
     def __init__(self) -> None:
         self.walls = {"n": 1,
@@ -89,6 +87,7 @@ class MazeGenerator():
 
 
 def main() -> None:
+    subprocess.run(["clear"])
     display.print_title()
     maze_gen: MazeGenerator = MazeGenerator()
     maze_gen.generate(vars.WIDTH, vars.HEIGHT)
