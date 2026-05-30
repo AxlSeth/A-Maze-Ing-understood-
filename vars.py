@@ -5,7 +5,9 @@ import random
 COLUMNS = shutil.get_terminal_size().columns
 ROWS = shutil.get_terminal_size().lines
 
-WALL_COLOR: str = random.choice(["\033[90m", "\033[189m", "\033[69m"])
+WALL_COLOR: str = random.choice(["\033[38;5;104m",
+                                 "\033[38;5;110m",
+                                 "\033[38;5;74m"])
 
 OPPOSITES: dict[str, str] = {"n": "s",
                              "s": "n",
@@ -24,11 +26,9 @@ def get_dimensions():
         try:
             w = int(input("Enter maze's width: "))
             h = int(input("Enter maze's height: "))
-#            entry_x, entry_y = input("Enter entry point (x,y): ")
-#            exit_x, exit_y = input("Enter exit point (x,y): ")
             if not (1 <= h <= COLUMNS // 6 or 1 <= w <= ROWS//6):
                raise ValueError()
-            return w, h #, (entry_x, entry_y), (exit_x, exit_y)
+            return w, h
         except ValueError:
             subprocess.run(["clear"])
             print("Please input a valid number, don't be stupid.")
