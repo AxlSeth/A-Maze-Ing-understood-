@@ -14,7 +14,6 @@ class Cell():
         self.is_pattern: int = 0
 
 
-
 class MazeGenerator():
     def __init__(self) -> None:
         self.width = vars.WIDTH
