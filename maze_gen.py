@@ -1,6 +1,5 @@
 import random
 import vars
-import subprocess
 
 
 class Cell():
@@ -50,7 +49,7 @@ class MazeGenerator():
             valid_directions.append(("w", y, x - 1))
         return (valid_directions)
 
-    def create_paths(self, maze: list[list[Cell]]) -> None:
+    def create_paths(self, maze: list[list[Cell]], on_carve=None) -> None:
         maze[0][0].is_checked = 1
         stack: list[tuple[int, int]] = [(0, 0)]
 
@@ -64,20 +63,18 @@ class MazeGenerator():
                 maze[ny][nx].is_checked = 1
                 maze[y][x].walls[direction] = 0
                 maze[ny][nx].walls[vars.OPPOSITES[direction]] = 0
+                if on_carve:
+                    on_carve(y, x, direction)
                 stack.append((ny, nx))
 
-    def generate(self,
-                 width: int,
-                 height: int) -> list[list[Cell]]:
+    def generate(self, width: int, height: int, on_carve=None) -> list[list[Cell]]:
         maze: list[list[Cell]] = []
-
         for y in range(height):
             row: list[Cell] = []
             for x in range(width):
-                cell: Cell = Cell()
-                row.append(cell)
+                row.append(Cell())
             maze.append(row)
         if vars.HEIGHT > len(vars.PATTERN) and vars.WIDTH > len(vars.PATTERN[0]):
             self.apply_pattern(maze)
-        self.create_paths(maze)
-        return (maze)
+        self.create_paths(maze, on_carve)
+        return maze
